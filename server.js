@@ -14,9 +14,6 @@ const pam = require('authenticate-pam')
 var LOGLEVEL = 'verbose'
 var PORT = 5555
 
-var userName = 'not-set'
-var isAuthorized = false
-
 log.level = LOGLEVEL
 
 log.notice('main', 'Moin Moin from nodeAPIauth v' + packagejson.version)
@@ -37,42 +34,21 @@ app.use(function (req, res, next) {
   next()
 })
 
-// get the NodeAPI auth
-app.post('/', (req, res) => {
+app.post('/', doNodeAPIAuth)
+
+async function doNodeAPIAuth (req, res) {
   log.verbose('NodeAPIAuth', '---> new auth request')
-  userName = req.body.user_name
+  var userName = req.body.user_name
   var secret = req.body.secret
+  var isAuthorized = false
   log.verbose('NodeAPIAuth', 'user/pw: ', userName, secret)
 
-  // always ok
-  // isAuthorized = true
-  // sendReturn(isAuthorized, res)
+  // isAuthorized = true   // always ok
 
-  pamAuthAsync(userName, secret, res)
-})
+  isAuthorized = await pamAuthAsync(userName, secret)
+  log.silly('NodeAPIAuth', 'isAuthorized: ', isAuthorized)
 
-function json2s (obj) { return JSON.stringify(obj, null, 2) } // format JSON payload for log
-
-function pamAuthAsync (userid, password, res) {
-  log.silly('pam', 'start pam auth')
-  pam.authenticate(userid, password,
-    (err) => {
-      if (err) {
-        log.info('pam', 'user: ' + userid + ' error: ', err)
-        isAuthorized = false
-      } else {
-        log.verbose('pam', 'success')
-        isAuthorized = true
-      }
-      sendReturn(isAuthorized, res)
-    },
-    { serviceName: 'sshd', remoteHost: 'localhost' }
-  )
-}
-
-function sendReturn (isAuthorized, res) {
-  log.silly('NodeAPIAuth', 'sendReturn')
-  if (isAuthorized) {
+  if (isAuthorized === true) {
     log.info('NodeAPIAuth', 'User: ' + userName + ' - authenticated')
     res.status(200).send({ 'key': '200:user is authorized' })
   } else {
@@ -80,3 +56,24 @@ function sendReturn (isAuthorized, res) {
     res.status(401).send({ 'key': '401:user is not authorized' })
   }
 }
+
+function pamAuthAsync (userid, password) {
+  log.silly('pam', 'start pam auth')
+
+  return new Promise(resolve => {
+    pam.authenticate(userid, password,
+      (err) => {
+        if (err) {
+          log.info('pam', 'user: ' + userid + ' error: ', err)
+          resolve(false)
+        } else {
+          log.verbose('pam', 'success')
+          resolve(true)
+        }
+      },
+      { serviceName: 'sshd', remoteHost: 'localhost' }
+    )
+  })
+}
+
+function json2s (obj) { return JSON.stringify(obj, null, 2) } // format JSON payload for log
