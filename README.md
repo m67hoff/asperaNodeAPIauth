@@ -1,4 +1,5 @@
-## external node.js based authentication for Aspera Node API
+## external node.js based authentication for Aspera NodeAPI
+[![Dependencies Status](https://david-dm.org/m67hoff/asperaNodeAPIauth.svg)](https://david-dm.org/m67hoff/asperaNodeAPIauth)
 
 **currently Linux only!**
 
