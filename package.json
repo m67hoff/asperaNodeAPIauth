@@ -1,0 +1,25 @@
+{
+  "name": "nodeAPIauth",
+  "version": "0.0.1",
+  "description": "node.js server to authenticate Aspera node API users",
+  "author": "mhoff@de.ibm.com",
+  "license": "Apache-2.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "live": "nodemon server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "helmet": "^3.15.0",
+    "npmlog": "^4.1.2",
+    "authenticate-pam": "^1.0.2"
+  },
+  "engines": {
+    "node": "8.x"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
