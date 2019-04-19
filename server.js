@@ -22,12 +22,12 @@ app.use(helmet())
 app.use(bodyParser.json())
 
 // start http server listen only on localhost
-app.listen(PORT, 'localhost', function () {
+app.listen(PORT, 'localhost', function() {
   log.http('express', 'server starting on ' + PORT)
 })
 
 // logger for all requests
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   log.silly('express', 'log method ' + req.method + ' ' + req.originalUrl)
   log.silly('express', 'log headers ', req.headers)
   log.silly('express', 'log body ', json2s(req.body))
@@ -36,7 +36,7 @@ app.use(function (req, res, next) {
 
 app.post('/', doNodeAPIAuth)
 
-async function doNodeAPIAuth (req, res) {
+async function doNodeAPIAuth(req, res) {
   log.verbose('NodeAPIAuth', '---> new auth request')
   var userName = req.body.user_name
   var secret = req.body.secret
@@ -57,7 +57,7 @@ async function doNodeAPIAuth (req, res) {
   }
 }
 
-function pamAuthAsync (userid, password) {
+function pamAuthAsync(userid, password) {
   log.silly('pam', 'start pam auth')
 
   return new Promise(resolve => {
@@ -76,4 +76,4 @@ function pamAuthAsync (userid, password) {
   })
 }
 
-function json2s (obj) { return JSON.stringify(obj, null, 2) } // format JSON payload for log
+function json2s(obj) { return JSON.stringify(obj, null, 2) } // format JSON payload for log

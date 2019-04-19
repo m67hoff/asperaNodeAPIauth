@@ -2,6 +2,7 @@
   "name": "nodeAPIauth",
   "version": "0.0.1",
   "description": "node.js server to authenticate Aspera node API users",
+  "os":["linux"],
   "author": "mhoff@de.ibm.com",
   "license": "Apache-2.0",
   "main": "server.js",
